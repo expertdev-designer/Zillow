@@ -1,18 +1,48 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:zillow1/Utils/AppImage.dart';
 import 'package:zillow1/user_profile/user_profile_screen.dart';
 
 import '../Utils/colors.dart';
 import '../Utils/strings.dart';
+import '../test.dart';
 
-class PasswordScreen extends StatelessWidget{
+class PasswordScreen extends StatefulWidget{
+  @override
+  State<PasswordScreen> createState() => _PasswordScreenState();
+}
+
+class _PasswordScreenState extends State<PasswordScreen> {
+
+  bool isConditionMet = true;
+  bool isVisible = false;
+  bool _isPasswordEightCharacters = false;
+  bool _hasPasswordOneNumber = false;
+
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  onPasswordChanged(String password) {
+    final numericRegex = RegExp(r'[0-9]');
+
+    setState(() {
+      _isPasswordEightCharacters = false;
+      if(password.length >= 8)
+        _isPasswordEightCharacters = true;
+
+      _hasPasswordOneNumber = false;
+      if(numericRegex.hasMatch(password))
+        _hasPasswordOneNumber = true;
+    });
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
-    bool isConditionMet = true;
 
-    TextEditingController emailController = TextEditingController();
-    TextEditingController passwordController = TextEditingController();
     return Scaffold(
       body: Stack(
         children: [
@@ -50,6 +80,7 @@ class PasswordScreen extends StatelessWidget{
                   children: [
                     Expanded(
                       child: customTextField(
+                        //onChange: onPasswordChanged,
                         controller: emailController,
                         labelText: Strings.email_address,
                         keyboardType: TextInputType.emailAddress,
@@ -59,13 +90,6 @@ class PasswordScreen extends StatelessWidget{
                           color: AppColors.blue,
                         ),
                         borderColor: Colors.blue,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your email address';
-                          }
-                          // Add more validation logic as needed
-                          return null;
-                        },
                       ),
                     ),
 
@@ -86,9 +110,10 @@ class PasswordScreen extends StatelessWidget{
                   children: [
                     Expanded(
                       child: customTextField(
-                        controller: passwordController,
+                        onChange: (password) => onPasswordChanged(password),
+                        //controller: passwordController,
                         labelText: Strings.password,
-                        obscureText: true,
+                        obscureText: !isVisible,
                         keyboardType: TextInputType.emailAddress,
                         labelStyle: GoogleFonts.poppins(
                           fontSize: 12,
@@ -114,37 +139,25 @@ class PasswordScreen extends StatelessWidget{
 
                 Row(
                   children: [
-                    if (isConditionMet) // Show the icon only when the condition is met
-                      const Icon(
-                        Icons.check_circle,
-                        color: Colors.green,
-                      )
-                    else
-                      Icon(
-                        Icons.cancel,
-                        color: Colors.red,
-                      ),
-                    SizedBox(width: 8), // Add spacing between icon and text
-                    Text(
-                      isConditionMet ? Strings.at_least_8_char : 'Minimum 8 characters required', // Change the text based on the condition
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w300,
-                        color: AppColors.text_grey,
-                      ),
-                    ),
+                    _isPasswordEightCharacters ? SvgPicture.asset(AppImage.tick) : SvgPicture.asset(AppImage.cross),
+                    SizedBox(width: 10,),
+                    const Text(
+                      Strings.at_least_8_char,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w300,
+                          color: AppColors.text_grey,
+                        ),
+                        ),
                   ],
                 ),
 
 
-                SizedBox(height: 8), // Add spacing between rows
+                SizedBox(height: 8),
 
                 Row(
                   children: [
-                    Icon(
-                      isConditionMet ? Icons.check_circle : Icons.cancel,
-                      color: isConditionMet ? Colors.green : Colors.red,
-                    ),
+                    _hasPasswordOneNumber ? SvgPicture.asset(AppImage.tick) : SvgPicture.asset(AppImage.cross),
                     SizedBox(width: 8),
                     const Text(
                       Strings.mix_of_letters,
@@ -192,16 +205,12 @@ class PasswordScreen extends StatelessWidget{
                           ),
                           //SizedBox(width: 4,),
                           WidgetSpan(
-                            child: SizedBox(width: 4), // Add a SizedBox for space
+                            child: SizedBox(width: 4),
                           ),
                           TextSpan(
                             text: Strings.terms_of_use,
                             style: TextStyle(fontWeight: FontWeight.w500, color: AppColors.blue),
                           ),
-                          // TextSpan(
-                          //   text: ' text example.',
-                          //   style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                          // ),
                         ],
                       ),
                     ),
@@ -227,7 +236,7 @@ class PasswordScreen extends StatelessWidget{
                       ),
                     ),
                     onPressed: () {
-                      //Navigator.push(context, MaterialPageRoute(builder: (context)=>ProfileScreen()));
+                     // Navigator.push(context, MaterialPageRoute(builder: (context)=>Test()));
                     },
                     child: Text(Strings.register,
                       style: GoogleFonts.poppins(
@@ -251,7 +260,7 @@ class PasswordScreen extends StatelessWidget{
   }
 
   Widget customTextField({
-    required TextEditingController controller,
+    TextEditingController? controller,
     required String labelText,
     TextInputType keyboardType = TextInputType.text,
     bool obscureText = false,
@@ -259,20 +268,22 @@ class PasswordScreen extends StatelessWidget{
     BorderSide? borderSide,
     TextStyle? labelStyle,
     Color? borderColor,
+    void Function(String)? onChange,
   }) {
     return TextFormField(
+      onChanged: onChange,
       controller: controller,
       keyboardType: keyboardType,
       obscureText: obscureText,
       style: TextStyle(
-        color: borderColor, // Change the text color to the border color
+        color: borderColor,
       ),
       decoration: InputDecoration(
         labelText: labelText,
         labelStyle: labelStyle,
         border: UnderlineInputBorder(
           borderSide: BorderSide(
-            color: borderColor ?? Colors.blue, // Default to blue if no color provided
+            color: borderColor ?? Colors.blue,
             width: 2.0,
           ),
         ),
@@ -280,7 +291,6 @@ class PasswordScreen extends StatelessWidget{
       validator: validator,
     );
   }
-
 
   Widget AppText({
     required String text,

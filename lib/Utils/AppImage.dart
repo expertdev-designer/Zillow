@@ -9,4 +9,6 @@ class AppImage {
   static const circle_outline = "assets/images/material-symbols_circle-outline.svg.svg";
   static const profile_icon = "assets/images/profile_icon.svg";
   static const tick = "assets/images/teenyicons_tick-outline.svg";
+  static const cross = "assets/images/cross_icon.svg";
+  static const fill_profile = "assets/images/fill_profile.svg";
 }
