@@ -20,12 +20,18 @@ class _PasswordScreenState extends State<PasswordScreen> {
   bool isVisible = false;
   bool _isPasswordEightCharacters = false;
   bool _hasPasswordOneNumber = false;
+  bool _passwordStrength = false;
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  String passwordStrength = 'Weak';
 
   onPasswordChanged(String password) {
     final numericRegex = RegExp(r'[0-9]');
+    final uppercaseRegex = RegExp(r'[A-Z]');
+    final lowercaseRegex = RegExp(r'[a-z]');
+    final specialCharRegex = RegExp(r'[!@#$%^&*]');
+
 
     setState(() {
       _isPasswordEightCharacters = false;
@@ -33,8 +39,20 @@ class _PasswordScreenState extends State<PasswordScreen> {
         _isPasswordEightCharacters = true;
 
       _hasPasswordOneNumber = false;
-      if(numericRegex.hasMatch(password))
+      if(numericRegex.hasMatch(password) && uppercaseRegex.hasMatch(password) && lowercaseRegex.hasMatch(password) && specialCharRegex.hasMatch(password))
         _hasPasswordOneNumber = true;
+
+
+      passwordStrength = 'Weak';
+      if (password.length >= 8 &&
+          numericRegex.hasMatch(password) &&
+          uppercaseRegex.hasMatch(password) &&
+          lowercaseRegex.hasMatch(password) &&
+          specialCharRegex.hasMatch(password)) {
+        passwordStrength = 'Good';
+      } else if (password.length >= 8 && numericRegex.hasMatch(password)) {
+        passwordStrength = 'Fair';
+      }
     });
   }
 
@@ -170,22 +188,31 @@ class _PasswordScreenState extends State<PasswordScreen> {
                   ],
                 ),
                 SizedBox(height: 8,),
-                Row(
+                 Row(
                   children: [
-                    Icon(
-                      isConditionMet ? Icons.check_circle : Icons.cancel,
-                      color: isConditionMet ? Colors.green : Colors.red,
-                    ),
+                    passwordStrength == 'Good'
+                        ? SvgPicture.asset(AppImage.circle_halfColored)
+                        : passwordStrength == 'Fair'
+                        ? SvgPicture.asset(AppImage.circle_outline)
+                        : SvgPicture.asset(AppImage.circle),
                     SizedBox(width: 8),
                     Text(
-                      Strings.strenght_fair,
+                      Strings.strength,
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w300,
                         color: AppColors.text_grey,
                       ),
                     ),
-                  ],
+                    SizedBox(width: 2,),
+                      Text(
+                        passwordStrength,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ),
+                      ],
                 ),
                 SizedBox(height: 30,),
 

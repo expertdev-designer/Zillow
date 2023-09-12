@@ -15,7 +15,7 @@ class Strings{
   static const mix_of_letters = "Mix of letters, numbers and special characters";
   static const strenght_weak = "Password Strength : Weak";
   static const show = "SHOW";
-  static const strenght_fair = "Password Strength : Fair";
+  static const strength = "Password Strength : ";
   static const password_to_be = "Next, what would you like your password to be?";
   static const terms_of_use = "Terms of Use";
   static const do_you_know_your_home = "Do you own your home";
@@ -23,4 +23,7 @@ class Strings{
   static const use_your_location = "Use your location";
   static const search_for_your_home = "Search for your home";
   static const search = "search";
+  static const fair = "Fair";
+  static const good = "Good";
+  static const weak = "Weak";
 }
