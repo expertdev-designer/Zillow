@@ -12,4 +12,5 @@ class AppImage {
   static const cross = "assets/images/cross_icon.svg";
   static const fill_profile = "assets/images/fill_profile.svg";
   static const circle_halfColored = "assets/images/circle_halfcolored.svg";
+  static const zillow_logo = "assets/images/zillow_icon.svg";
 }

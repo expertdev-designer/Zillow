@@ -20,7 +20,13 @@ class _PasswordScreenState extends State<PasswordScreen> {
   bool isVisible = false;
   bool _isPasswordEightCharacters = false;
   bool _hasPasswordOneNumber = false;
-  bool _passwordStrength = false;
+  bool _hasMixLetters = false;
+  bool _hasPasswordOneSpecialChar = false;
+  bool _hasPasswordOneUpperCase = false;
+  bool isPasswordVisible = false;
+  bool hasInput = false;
+
+
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -39,12 +45,19 @@ class _PasswordScreenState extends State<PasswordScreen> {
         _isPasswordEightCharacters = true;
 
       _hasPasswordOneNumber = false;
-      if(numericRegex.hasMatch(password) && uppercaseRegex.hasMatch(password) && lowercaseRegex.hasMatch(password) && specialCharRegex.hasMatch(password))
+      if(numericRegex.hasMatch(password))
         _hasPasswordOneNumber = true;
 
+      _hasPasswordOneSpecialChar = false;
+      if(specialCharRegex.hasMatch(password))
+        _hasPasswordOneSpecialChar = true;
+
+      _hasPasswordOneUpperCase = false;
+      if(uppercaseRegex.hasMatch(password))
+        _hasPasswordOneUpperCase = true;
 
       passwordStrength = 'Weak';
-      if (password.length >= 8 &&
+      if (password.length >= 11 &&
           numericRegex.hasMatch(password) &&
           uppercaseRegex.hasMatch(password) &&
           lowercaseRegex.hasMatch(password) &&
@@ -52,6 +65,17 @@ class _PasswordScreenState extends State<PasswordScreen> {
         passwordStrength = 'Good';
       } else if (password.length >= 8 && numericRegex.hasMatch(password)) {
         passwordStrength = 'Fair';
+      } else if (password.length >= 12 ) {
+        passwordStrength = 'Excellent';
+      }
+
+      _hasMixLetters = false;
+      if(password.length >= 8 &&
+          numericRegex.hasMatch(password) &&
+          uppercaseRegex.hasMatch(password) &&
+          lowercaseRegex.hasMatch(password) &&
+          specialCharRegex.hasMatch(password)){
+        _hasMixLetters = true;
       }
     });
   }
@@ -131,7 +155,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
                         onChange: (password) => onPasswordChanged(password),
                         //controller: passwordController,
                         labelText: Strings.password,
-                        obscureText: !isVisible,
+                        obscureText: !isPasswordVisible,
                         keyboardType: TextInputType.emailAddress,
                         labelStyle: GoogleFonts.poppins(
                           fontSize: 12,
@@ -139,16 +163,32 @@ class _PasswordScreenState extends State<PasswordScreen> {
                           color: AppColors.blue,
                         ),
                         borderColor: Colors.blue,
+                        isPasswordVisible: isPasswordVisible, // Pass the visibility state
+                        togglePasswordVisibility: () {
+                          setState(() {
+                            isPasswordVisible = !isPasswordVisible; // Toggle the visibility state
+                          });
+                        },
                       ),
+
                     ),
                     SizedBox(width: 12),
-                    Text(
-                      Strings.show,
-                      style: GoogleFonts.poppins(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                        color: AppColors.blue,
-                        //height: 1.5,
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          isPasswordVisible = !isPasswordVisible; // Toggle the visibility state
+                        });
+                      },
+                      child: Text(
+                        //Strings.show,
+                        isPasswordVisible ? Strings.hide : Strings.show,
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: AppColors.blue,
+                          //height: 1.5,
+                        ),
+
                       ),
                     ),
                   ],
@@ -157,8 +197,14 @@ class _PasswordScreenState extends State<PasswordScreen> {
 
                 Row(
                   children: [
-                    _isPasswordEightCharacters ? SvgPicture.asset(AppImage.tick) : SvgPicture.asset(AppImage.cross),
-                    SizedBox(width: 10,),
+                    //_isPasswordEightCharacters ? SvgPicture.asset(AppImage.tick) : SvgPicture.asset(AppImage.cross),
+                    Opacity(
+                      opacity: _isPasswordEightCharacters ? 1.0 : 0.0, // Initially transparent
+                      child: _isPasswordEightCharacters
+                          ? SvgPicture.asset(AppImage.tick)
+                          : SvgPicture.asset(AppImage.cross),
+                    ),
+                    SizedBox(width: 8,),
                     const Text(
                       Strings.at_least_8_char,
                         style: TextStyle(
@@ -175,11 +221,30 @@ class _PasswordScreenState extends State<PasswordScreen> {
 
                 Row(
                   children: [
-                    _hasPasswordOneNumber ? SvgPicture.asset(AppImage.tick) : SvgPicture.asset(AppImage.cross),
+                    //_hasMixLetters ? SvgPicture.asset(AppImage.tick) : SvgPicture.asset(AppImage.cross),
+                    Opacity(
+                      opacity: _hasMixLetters ? 1.0 : 0.0, // Initially transparent
+                      child: _hasMixLetters
+                          ? SvgPicture.asset(AppImage.tick)
+                          : SvgPicture.asset(AppImage.cross),
+                    ),
                     SizedBox(width: 8),
-                    const Text(
-                      Strings.mix_of_letters,
-                      style: TextStyle(
+                     Text(
+                      //Strings.mix_of_letters,
+                       (_hasPasswordOneNumber && _hasPasswordOneSpecialChar)
+                           ? Strings.mix_of_letters
+                           : (!_hasPasswordOneNumber && !_hasPasswordOneSpecialChar)
+                           ? Strings.atleast_one_num_and_one_char
+                           : (!_hasPasswordOneNumber)
+                           ? Strings.atleast_one_num
+                           //: Strings.atleast_one_special_char,
+                           : (!_hasPasswordOneUpperCase)
+                           ? Strings.atleast_one_upperChar
+                           // : (!_hasPasswordOneSpecialChar)
+                           // ? Strings.atleast_one_special_char
+                           : Strings.atleast_one_special_char,
+
+                      style: const TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w300,
                         color: AppColors.text_grey,
@@ -190,13 +255,21 @@ class _PasswordScreenState extends State<PasswordScreen> {
                 SizedBox(height: 8,),
                  Row(
                   children: [
-                    passwordStrength == 'Good'
-                        ? SvgPicture.asset(AppImage.circle_halfColored)
-                        : passwordStrength == 'Fair'
-                        ? SvgPicture.asset(AppImage.circle_outline)
-                        : SvgPicture.asset(AppImage.circle),
+                    // passwordStrength == 'Good'
+                    //     ? SvgPicture.asset(AppImage.circle_outline)
+                    //     : passwordStrength == 'Fair'
+                    //     ? SvgPicture.asset(AppImage.circle_halfColored)
+                    //     : SvgPicture.asset(AppImage.circle),
+                    Opacity(
+                      opacity: _hasMixLetters ? 1.0 : 0.0,
+                     child: passwordStrength == 'Good'
+                          ? SvgPicture.asset(AppImage.circle_outline)
+                          : passwordStrength == 'Fair'
+                               ? SvgPicture.asset(AppImage.circle_halfColored)
+                               : SvgPicture.asset(AppImage.circle),
+                    ),
                     SizedBox(width: 8),
-                    Text(
+                    const Text(
                       Strings.strength,
                       style: TextStyle(
                         fontSize: 12,
@@ -204,7 +277,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
                         color: AppColors.text_grey,
                       ),
                     ),
-                    SizedBox(width: 2,),
+                    SizedBox(width:2,),
                       Text(
                         passwordStrength,
                         style: TextStyle(
@@ -212,6 +285,12 @@ class _PasswordScreenState extends State<PasswordScreen> {
                           fontWeight: FontWeight.w300,
                         ),
                       ),
+                    SizedBox(width: 2,),
+                    passwordStrength == 'Good'
+                        ? SvgPicture.asset(AppImage.tick)
+                        : passwordStrength == 'Fair'
+                        ? SvgPicture.asset(AppImage.circle_warning,color: Colors.orange,)
+                        : SvgPicture.asset(AppImage.circle_warning,color: Colors.red,),
                       ],
                 ),
                 SizedBox(height: 30,),
@@ -296,6 +375,8 @@ class _PasswordScreenState extends State<PasswordScreen> {
     TextStyle? labelStyle,
     Color? borderColor,
     void Function(String)? onChange,
+    bool? isPasswordVisible,
+    Function? togglePasswordVisibility,
   }) {
     return TextFormField(
       onChanged: onChange,

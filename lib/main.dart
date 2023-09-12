@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zillow1/Utils/colors.dart';
 import 'package:zillow1/registration/splash_screen.dart';
 
 void main() {
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.blue),
         useMaterial3: true,
       ),
       home:  SplashScreen(),

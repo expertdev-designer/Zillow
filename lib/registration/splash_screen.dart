@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:zillow1/registration/register_email_screen.dart';
+import 'package:zillow1/registration/welcome_screen.dart';
 
 class SplashScreen extends StatefulWidget{
   @override
@@ -14,7 +15,7 @@ class _SplashScreenState extends State<SplashScreen> {
     // TODO: implement initState
     super.initState();
     Timer(Duration(seconds: 2), () {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>RegisterEmail()));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>WelcomeScreen()));
     });
   }
 

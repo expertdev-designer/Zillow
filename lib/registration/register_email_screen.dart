@@ -52,8 +52,8 @@ class RegisterEmail extends StatelessWidget{
                    ),
                    border: UnderlineInputBorder(
                      borderSide: BorderSide(
-                       color: Colors.blue,// Change the color to your desired border color
-                       width: 2.0, // Adjust the border width as needed
+                       color: Colors.blue,
+                       width: 2.0,
                      ),
                    ),
                  ),
@@ -127,7 +127,7 @@ class RegisterEmail extends StatelessWidget{
                SizedBox(height: 10,),
 
                Container(
-                 padding: EdgeInsets.all(10.0), // Adjust padding as needed
+                 padding: EdgeInsets.all(10.0),
                  decoration: BoxDecoration(
                    borderRadius: BorderRadius.circular(5.0),
                    border: Border.all(
@@ -140,7 +140,7 @@ class RegisterEmail extends StatelessWidget{
                    children: [
                      //Icon(Icons.facebook,size: 40,color: AppColors.blue,),
                      SvgPicture.asset(AppImage.facebook,width: 30, height: 30,),
-                     SizedBox(width: 16.0), // Add spacing between the logo and text
+                     SizedBox(width: 16.0),
                      Text(
                       Strings.continue_with_facebook,
                        style: GoogleFonts.poppins(
@@ -154,7 +154,7 @@ class RegisterEmail extends StatelessWidget{
                SizedBox(height: 15,),
 
                Container(
-                 padding: EdgeInsets.all(10.0), // Adjust padding as needed
+                 padding: EdgeInsets.all(10.0),
                  decoration: BoxDecoration(
                    borderRadius: BorderRadius.circular(5.0),
                    border: Border.all(
@@ -195,7 +195,7 @@ class RegisterEmail extends StatelessWidget{
                            style: TextStyle(fontWeight: FontWeight.w500, color: Colors.black),
                          ),
                          WidgetSpan(
-                           child: SizedBox(width: 4), // Add a SizedBox for space
+                           child: SizedBox(width: 4),
                          ),
                          TextSpan(
                            text: Strings.zillow_term_use,

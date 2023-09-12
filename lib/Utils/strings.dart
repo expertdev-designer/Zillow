@@ -15,7 +15,8 @@ class Strings{
   static const mix_of_letters = "Mix of letters, numbers and special characters";
   static const strenght_weak = "Password Strength : Weak";
   static const show = "SHOW";
-  static const strength = "Password Strength : ";
+  static const hide = "HIDE";
+  static const strength = "Password Strength :";
   static const password_to_be = "Next, what would you like your password to be?";
   static const terms_of_use = "Terms of Use";
   static const do_you_know_your_home = "Do you own your home";
@@ -26,4 +27,12 @@ class Strings{
   static const fair = "Fair";
   static const good = "Good";
   static const weak = "Weak";
+  static const atleast_one_num_and_one_char = "At least one number and one special char are required";
+  static const atleast_one_num = "At least one number is required";
+  static const atleast_one_upperChar = "At least one UpperCase is required";
+  static const atleast_one_special_char = "At least one special character is required";
+  static const do_you_own_your_home = "Do you own your home";
+  static const claim_your_home_text = "Claim your home to track its value, see local market activity and more.";
+  static const welcome_to_zillow = "Welcome to Zillow";
+  static const whats_your_email = "To get started, what’s yout email?";
 }
